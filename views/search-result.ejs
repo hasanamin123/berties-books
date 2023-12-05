@@ -1,0 +1,57 @@
+<!doctype html>                                                                                                                                                     
+
+                                                                                                                                                                    
+
+<html>                                                                                                                                                              
+
+                                                                                                                                                                    
+
+<head>                                                                                                                                                              
+
+                                                                                                                                                                    
+
+<link rel="stylesheet"  type="text/css" href="main.css" />                                                                                                          
+
+                                                                                                                                                                    
+
+</head>                                                                                                                                                             
+
+                                                                                                                                                                    
+
+<body>                                                                                                                                                              
+
+                                                                                                                                                                    
+
+<h1><%=shopName%> Shop</h1>                                                                                                                                         
+
+                                                                                                                                                                    
+
+<h2>Here are books that you have searched for:</h2>                                                                                                                               
+
+                                                                                                                                                                    
+
+<ul>                                                                                                                                                                
+
+                                                                                                                                                                    
+
+<% for(let i = 0; i < availableBooks.length; i++) { %>                                                                                                              
+
+                                                                                                                                                                    
+
+<li><%= availableBooks[i].name + "" + availableBooks[i].price  %></li>                                                                                              
+
+                                                                                                                                                                    
+
+<% } %>                                                                                                                                                             
+
+                                                                                                                                                                    
+
+</ul>                                                                                                                                                               
+
+                                                                                                                                                                    
+
+</body>                                                                                                                                                             
+
+                                                                                                                                                                    
+
+</html>
