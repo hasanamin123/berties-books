@@ -2,17 +2,18 @@
 var express = require ('express')
 var ejs = require('ejs')
 var bodyParser= require ('body-parser')
-
+var bcrypt = require('bcrypt');
 // Create the express application object
 const app = express()
-const port = 8000
+const port = 3001
 const mysql = require('mysql');
 app.use(bodyParser.urlencoded({ extended: true }))
 const db = mysql.createConnection ({
 host: 'localhost',
 user: 'appuser',
 password: 'app2027',
-database: 'myBookshop'
+database: 'myBookshop',
+port: "3001"
 });
 
 db.connect((err) => {
