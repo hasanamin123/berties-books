@@ -10,9 +10,9 @@ module.exports = function(app, shopData) {
 
     });                                                                                                                                               
 
-    app.get('/about',function(req,res){
+    app.get('/aboutlondon',function(req,res){
 
-        res.render('about.ejs', shopData);
+        res.render('aboutlondon.ejs', shopData);
 
     });                                                                                                                                               
 
@@ -44,13 +44,13 @@ module.exports = function(app, shopData) {
 
     });                                                                                                                                               
 
-    app.get('/addbook', function (req,res) {
+    app.get('/addanarea', function (req,res) {
 
-        res.render('addbook.ejs', shopData);
+        res.render('addanarea.ejs', shopData);
 
     });                                                                                                                                               
 
-    app.get('/list', function(req, res) {
+    app.get('/listofareas', function(req, res) {
 
         // Query database to get all the books
 
@@ -72,12 +72,12 @@ module.exports = function(app, shopData) {
 
             console.log(newData)                                                                                                                      
 
-            res.render("list.ejs", newData)
+            res.render("listofareas.ejs", newData)
 
          });                                                                                                                                          
 
     });
-   app.get('/bargainbooks', function(req,res) {
+   app.get('/review', function(req,res) {
    let sqlquery = "SELECT * FROM books WHERE price<20";
    db.query(sqlquery, (err, result) => {
    if (err) {
@@ -85,7 +85,7 @@ module.exports = function(app, shopData) {
    }
    let newData = Object.assign({}, shopData, {availableBooks:result});
     console.log(newData)
-   res.render("bargainbooks.ejs", newData)
+   res.render("review.ejs", newData)
    });
    });
 
@@ -93,14 +93,19 @@ module.exports = function(app, shopData) {
     app.post('/registered', function (req,res) {
 
         // Saving data in database
+        const bcrypt = require('bcrypt');
+        const saltRounds = 10;
+        const plainPassword = req.body.password;
+        bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
 
+        })
         res.send(' Hello '+ req.body.first + ' '+ req.body.last +' you are now registered!  We will send an email to you at ' + req.body.email);
 
     });                                                                                                                                               
 
                                                                                                                                                       
 
-    app.post('/bookadded', function (req,res) {
+    app.post('/addanarea', function (req,res) {
 
           // saving data in database
 
