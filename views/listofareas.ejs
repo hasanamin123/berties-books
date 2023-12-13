@@ -2,28 +2,28 @@
 
 <html>
 
-<head>
+  <head>
 
-<link rel="stylesheet"  type="text/css" href="main.css" />
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
 
-</head>
+  </head>
 
-<body>
+  <body>
 
-<h1><%=shopName%> Shop</h1>
+    <h1><%=shopName%></h1>
 
-<h2>Here are books that we sell:</h2>
+    <h2>Here are a list of areas in London</h2>
 
-<ul>
+    <ul>
 
-<% for(let i = 0; i < availableBooks.length; i++) { %>
+      <% availablearea.forEach(function(areaRatings) { %>
 
-<li><%= availableBooks[i].name + "" + availableBooks[i].price  %></li>
+        <li><%= areaRatings.area %>, <%=areaRatings.rating%> </li>
 
-<% } %>
+      <% }) %>
 
-</ul>
+    </ul>
 
-</body>
-
+    </body>
+    
 </html>

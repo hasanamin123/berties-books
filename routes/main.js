@@ -26,7 +26,7 @@ module.exports = function(app, shopData) {
 
         // Searching in the database
      let sqlquery =
-     "SELECT * from books WHERE name like '%" + req.query.keyword + "%'";
+     "SELECT * from areaRatings WHERE area like '%" + req.query.keyword + "%'";
      db.query(sqlquery,(err, result) => {
      if (err) {
      res.send("Error");
@@ -54,7 +54,7 @@ module.exports = function(app, shopData) {
 
         // Query database to get all the books
 
-        let sqlquery = "SELECT * FROM books";
+        let sqlquery = "SELECT * FROM areaRatings";
 
                                                                                                                                                       
 
@@ -68,7 +68,7 @@ module.exports = function(app, shopData) {
 
             }
 
-            let newData = Object.assign({}, shopData, {availableBooks:result});
+            let newData = Object.assign({}, shopData, {availablearea:result});
 
             console.log(newData)                                                                                                                      
 
@@ -78,7 +78,7 @@ module.exports = function(app, shopData) {
 
     });
    app.get('/review', function(req,res) {
-   let sqlquery = "SELECT * FROM books WHERE price<20";
+   let sqlquery = "SELECT * FROM area WHERE rating<80";
    db.query(sqlquery, (err, result) => {
    if (err) {
    res.redirect('./');
@@ -109,11 +109,11 @@ module.exports = function(app, shopData) {
 
           // saving data in database
 
-          let sqlquery = "INSERT INTO books (name, price) VALUES (?,?)";
+          let sqlquery = "INSERT INTO areaRatings (area, rating) VALUES (?,?)";
 
           // execute sql query
 
-          let newrecord = [req.body.name, req.body.price];
+          let newrecord = [req.body.area, req.body.rating];
 
           db.query(sqlquery, newrecord, (err, result) => {                                                                                            
 
@@ -125,9 +125,9 @@ module.exports = function(app, shopData) {
 
             else
 
-            res.send(' This book is added to the database, name: '+ req.body.name
+            res.send(' This area is added to the database, area: '+ req.body.area
 
-+ ' price '+ req.body.price);
++ ' rating '+ req.body.rating);
 
             });                                                                                                                                       
 
