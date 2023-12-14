@@ -5,14 +5,14 @@ var bodyParser= require ('body-parser')
 var bcrypt = require('bcrypt');
 // Create the express application object
 const app = express()
-const port = 3001
+const port = 8000
 const mysql = require('mysql');
 app.use(bodyParser.urlencoded({ extended: true }))
 const db = mysql.createConnection ({
 host: 'localhost',
 user: 'appuser',
 password: 'app2027',
-database: 'LondonRatings'
+database: 'LondonRatings',
 });
 
 db.connect((err) => {

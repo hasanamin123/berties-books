@@ -90,20 +90,49 @@ module.exports = function(app, shopData) {
    });
 
 
-    app.post('/registered', function (req,res) {
+   const { body, validationResult } = require('express-validator');
 
-        // Saving data in database
-        const bcrypt = require('bcrypt');
-        const saltRounds = 10;
-        const plainPassword = req.body.password;
-        bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
+   app.post('/registered',
+       [
+           // Use express-validator to sanitize and validate input
+           body('first').trim().escape(),
+           body('last').trim().escape(),
+           body('email').trim().isEmail().normalizeEmail(),
+           // Add more validation and sanitization rules as needed
+       ],
+       function (req, res) {
+           // Saving data in the database
+           const bcrypt = require('bcrypt');
+           const saltRounds = 10;
+           const plainPassword = req.body.password;
+   
+           bcrypt.hash(plainPassword, saltRounds, function (err, hashedPassword) {
+               let sqlquery = "INSERT INTO users (username, first_name, last_name, email, hashedPassword) VALUES (?,?,?,?,?)";
+   
+               // execute SQL query
+               let newrecord = [
+                   req.body.username,
+                   req.body.first,
+                   req.body.last,
+                   req.body.email,
+                   hashedPassword
+               ];
+   
+               db.query(sqlquery, newrecord, (err, result) => {
+                   if (err) {
+                       return console.error(err.message);
+                   } else {
+                       result = 'Hello ' + req.body.first + ' ' + req.body.last + ' you are registered! You will receive an email at ' + req.body.email;
+                       result += 'Your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword;
+                       res.send(result);
+                   }
+               });
+           });
+       }
+   );
+   
 
-        })
-        res.send(' Hello '+ req.body.first + ' '+ req.body.last +' you are now registered!  We will send an email to you at ' + req.body.email);
-
-    });                                                                                                                                               
-
-                                                                                                                                                      
+                                                                                                                                                                                                                                                             
 
     app.post('/addanarea', function (req,res) {
 
@@ -123,14 +152,13 @@ module.exports = function(app, shopData) {
 
             }
 
-            else
+            else{
 
-            res.send(' This area is added to the database, area: '+ req.body.area
+            
 
-+ ' rating '+ req.body.rating);
-
-            });                                                                                                                                       
-
-       });                                                                                                                                            
-
-}
+            res.send(' This area is added to the database, area: '+ req.body.area+ ' rating '+ req.body.rating);
+            }
+            });
+        });
+                                                                                                                                 
+    }
