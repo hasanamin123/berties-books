@@ -1,13 +1,13 @@
 h1 {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
-    color: darkcyan;
+    color: darkblue;
 }
 
 h2 {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
-    color: cadetblue;
+    color: crimson;
 }
 
 p,li {
@@ -15,14 +15,14 @@ p,li {
 }
 
 a:link {
-    color: orangered;
+    color: green;
     text-decoration: none;
     padding:5px;
   }
   
   /* visited link */
   a:visited {
-    color: tomato;
+    color: crimson;
     text-decoration: none;
     padding:5px;
   }
@@ -41,3 +41,5 @@ a:link {
     text-decoration: none;
     padding:5px;
   }
+
+  body {background-color: blueviolet;}

@@ -1,6 +1,8 @@
 // Import the modules we need
 var express = require ('express')
 var session = require('express-session');
+var validator = require ('express-validator');
+const expressSanitizer = require('express-sanitizer');
 var ejs = require('ejs')
 var bodyParser= require ('body-parser')
 var bcrypt = require('bcrypt');
@@ -28,8 +30,13 @@ app.use(express.static(__dirname + '/public'));
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+        expires: 600000
+    }
+
   }));
+  app.use(expressSanitizer());
 // Set the directory where Express will pick up HTML files
 // __dirname will get the current directory
 app.set('views', __dirname + '/views');

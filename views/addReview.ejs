@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+<link rel="stylesheet"  type="text/css" href="main.css" />
+
+</head>
+
+<body>
+
+<h1><%=shopName%> Shop</h1>
+
+<h2>Feel free to post a review about a specific area in London! You can do this by entering an area of your choice as well as a number out of 10:</h2>
+
+<form method="POST" action="/review">
+  <p>Area: <input id="area" type="text" name="area" value="" /></p>
+  <p>Rating: <input id="rating" type="text" name="rating" value=""/></p>
+  <input type="submit" value="Add rating" />
+</form>
+  
+
+</body>
+
+</html>

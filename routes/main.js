@@ -1,5 +1,10 @@
 module.exports = function(app, shopData) {
-
+    const redirectLogin = (req, res, next) => {
+        if (!req.session.userId ) {
+          res.redirect('./login')
+        } else { next (); }
+    }
+    const { check, validationResult } = require('express-validator');
                                                                                                                                                       
 
     // Handle our routes
@@ -16,7 +21,7 @@ module.exports = function(app, shopData) {
 
     });                                                                                                                                               
 
-    app.get('/search',function(req,res){
+    app.get('/search', redirectLogin,function(req,res){
 
         res.render("search.ejs", shopData);
 
@@ -31,13 +36,54 @@ module.exports = function(app, shopData) {
      if (err) {
      res.send("Error");
     }
-    let newData = Object.assign({}, shopData, {availableBooks:result});
+    let newData = Object.assign({}, shopData, {availableareaRatings:result});
     console.log(newData)
     res.render("search-result.ejs", newData)
    });
     });
 
+    const http = require('https');
 
+    // Define options outside of the callback function
+    const options = {
+        method: 'GET',
+        hostname: 'myallies-breaking-news-v1.p.rapidapi.com',
+        port: null,
+        path: '/GetCompanyDetailsBySymbol?symbol=twtr',
+        headers: {
+            'X-RapidAPI-Key': '71a25e318cmsh02d5c91712d6660p1d7d71jsnd6344bb13347',
+            'X-RapidAPI-Host': 'myallies-breaking-news-v1.p.rapidapi.com'
+        }
+    };
+    
+    app.get('/breakingnews', function (req, res) {
+        // Use the defined options here
+        // ...
+    
+        // For example, you can make a request using the defined options
+        const request = http.request(options, function (response) {
+            // Handle the response
+            // ...
+        });
+    
+        // End the request
+        request.end();
+    });
+    
+    const req = http.request(options, function (res) {
+        const chunks = [];
+    
+        res.on('data', function (chunk) {
+            chunks.push(chunk);
+        });
+    
+        res.on('end', function () {
+            const body = Buffer.concat(chunks);
+            console.log(body.toString());
+        });
+    });
+    
+    req.end();
         app.get('/register', function (req,res) {
 
         res.render('register.ejs', shopData);
@@ -46,7 +92,7 @@ module.exports = function(app, shopData) {
     
      
 
-    app.get('/addanarea', function (req,res) {
+    app.get('/addanarea', redirectLogin, function (req,res) {
 
         res.render('addanarea.ejs', shopData);
 
@@ -77,7 +123,7 @@ module.exports = function(app, shopData) {
     });
     
 
-    app.get('/listofareas', function(req, res) {
+    app.get('/listofareas', redirectLogin,function(req, res) {
 
         // Query database to get all the books
 
@@ -104,30 +150,41 @@ module.exports = function(app, shopData) {
          });                                                                                                                                          
 
     });
-   app.get('/review', function(req,res) {
-   let sqlquery = "SELECT * FROM area WHERE rating<80";
-   db.query(sqlquery, (err, result) => {
-   if (err) {
-   res.redirect('./');
-   }
-   let newData = Object.assign({}, shopData, {availableBooks:result});
-    console.log(newData)
-   res.render("review.ejs", newData)
-   });
-   });
+    app.get('/addReview', redirectLogin, function (req, res) {
+        res.render('addReview.ejs', shopData);
+    });
+
+ 
+    app.post('/review', [
+        check('rating').isInt({ min: 0, max: 10 })
+    ], function (req, res) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.redirect('./addrating');
+        } else {
+            // Save new rating in database
+            let sqlquery = "INSERT INTO areaRatings (area, rating) VALUES (?,?)";
+            let newrecord = [req.sanitize(req.body.area), req.sanitize(req.body.rating)];
+            db.query(sqlquery, newrecord, (err, result) => {
+                if (err) {
+                    return console.error(err.message);
+                } else {
+                    res.send('You have added new rating for: ' + req.sanitize(req.body.area) + ' rating: ' + req.sanitize(req.body.rating));
+                }
+            });
+        }
+    });
 
 
-   const { body, validationResult } = require('express-validator');
+   
 
-   app.post('/registered',
-       [
-           // Use express-validator to sanitize and validate input
-           body('first').trim().escape(),
-           body('last').trim().escape(),
-           body('email').trim().isEmail().normalizeEmail(),
-           // Add more validation and sanitization rules as needed
-       ],
-       function (req, res) {
+   app.post('/registered', [check('email').isEmail()], function (req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.redirect('./register'); }
+    else { 
+
+    
            // Saving data in the database
            const bcrypt = require('bcrypt');
            const saltRounds = 10;
@@ -139,7 +196,7 @@ module.exports = function(app, shopData) {
                // execute SQL query
                let newrecord = [
                    req.body.username,
-                   req.body.first,
+                   req.sanitize(req.body.first),
                    req.body.last,
                    req.body.email,
                    hashedPassword
@@ -155,7 +212,8 @@ module.exports = function(app, shopData) {
                    }
                });
            });
-       }
+        }
+    }
    );
    
    app.get('/login', function (req,res) {
@@ -196,6 +254,15 @@ app.post('/LoggedIn', function(req, res) {
         }
     });
 });
+
+app.get('/logout', redirectLogin, (req,res) => {
+    req.session.destroy(err => {
+    if (err) {
+      return res.redirect('./')
+    }
+    res.send('you are now logged out. <a href='+'./'+'>Home</a>');
+    })
+})
 
 
 
