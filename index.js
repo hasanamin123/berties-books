@@ -1,5 +1,6 @@
 // Import the modules we need
 var express = require ('express')
+var session = require('express-session');
 var ejs = require('ejs')
 var bodyParser= require ('body-parser')
 var bcrypt = require('bcrypt');
@@ -24,7 +25,11 @@ console.log('Connected to database');
 global.db = db;
 // Set up css
 app.use(express.static(__dirname + '/public'));
-
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+  }));
 // Set the directory where Express will pick up HTML files
 // __dirname will get the current directory
 app.set('views', __dirname + '/views');
@@ -35,7 +40,7 @@ app.set('view engine', 'ejs');
 // Tells Express how we should process html files
 // We want to use EJS's rendering engine
 app.engine('html', ejs.renderFile);
-
+app.use(bodyParser.urlencoded({ extended: true }));
 // Define our data
 var shopData = {shopName: "London ratings forums"}
 

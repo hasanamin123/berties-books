@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>List of Users</title>
+
+</head>
+
+<body>
+
+    <h1>List of Users</h1>
+
+    <% if (userList && userList.length > 0) { %>
+
+        <ul>
+
+            <% userList.forEach(user => { %>
+
+                <li>
+
+                    <strong>User ID:</strong> <%= user.id %><br>
+
+                    <strong>Username:</strong> <%= user.username %><br>
+
+                    <strong>Email:</strong> <%= user.email %><br>
+
+                </li>
+
+            <% }); %>
+
+        </ul>
+
+    <% } else { %>
+
+        <p>No users found.</p>
+
+    <% } %>
+
+</body>
+
+</html>

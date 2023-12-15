@@ -42,13 +42,40 @@ module.exports = function(app, shopData) {
 
         res.render('register.ejs', shopData);
 
-    });                                                                                                                                               
+    });    
+    
+     
 
     app.get('/addanarea', function (req,res) {
 
         res.render('addanarea.ejs', shopData);
 
-    });                                                                                                                                               
+    });  
+    
+    app.get('/listusers', function(req, res) {
+
+        // Query database to get all the users
+    
+        let sqlquery = "SELECT * FROM users";
+    
+        // Execute sql query
+    
+        db.query(sqlquery, (err, result) => {                                                                                                         
+    
+            if (err) {
+                res.redirect('./');
+            }
+    
+            let newData = Object.assign({}, shopData, { userList: result });
+    
+            console.log(newData);
+    
+            res.render("listusers.ejs", newData);
+    
+        });
+    
+    });
+    
 
     app.get('/listofareas', function(req, res) {
 
@@ -131,6 +158,46 @@ module.exports = function(app, shopData) {
        }
    );
    
+   app.get('/login', function (req,res) {
+    res.render('login.ejs', { shopName: "London ratings forums"});
+});
+app.post('/LoggedIn', function(req, res) {
+    // Assuming req.body.username contains the username entered by the user
+    const username = req.body.username;
+
+    // Compare the form data with the data stored in the database
+    let sqlquery = "SELECT hashedPassword FROM LondonRatings.users WHERE username = ?";
+
+    // Save user session here, when login is successful
+    req.session.userId = username;
+
+    db.query(sqlquery, [username], (err, result) => {
+        if (err) {
+            return console.error(err.message);
+        } else if (result.length === 0) {
+            // No user found with that username
+            res.send('Invalid username or password');
+        } else {
+            // User found, compare the passwords
+            let hashedPassword = result[0].hashedPassword;
+            const bcrypt = require('bcrypt');
+            bcrypt.compare(req.body.password, hashedPassword, function(err, result) {
+                if (err) {
+                    // Handle error
+                    return console.error(err.message);
+                } else if (result === true) {
+                    // The passwords match, login successful
+                    res.send('Welcome, ' + req.body.username + '!' + '<a href=' + './' + '>Home</a>');
+                } else {
+                    // Login failed
+                    res.send('Invalid username or password');
+                }
+            });
+        }
+    });
+});
+
+
 
                                                                                                                                                                                                                                                              
 
